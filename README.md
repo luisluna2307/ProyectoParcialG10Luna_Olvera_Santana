@@ -13,7 +13,6 @@ src/
  │         └── proyectoparcialg10luna_olvera_santana/
  │         │   ├── Cuadro.java
  │         │   ├── Cluster.java
- │         │   ├── Punto.java
  │         │   ├── PintarCuadroTerminal.java
  │         │   └── PintarCuadroGUI.java
 resources/
@@ -25,8 +24,6 @@ resources/
   Contiene la lógica principal para cargar la matriz, detectar clústeres y realizar el relleno.
 - **`Cluster.java`**:
   Representa cada clúster detectado, almacenando su color, tamaño y lista de píxeles.
-- **`Punto.java`**:
-  Clase auxiliar para manejar coordenadas de los píxeles en la matriz.
 - **`PintarCuadroTerminal.java`**:
   Proporciona una interfaz de consola para probar las funcionalidades principales (cargar matriz, detectar y pintar clústeres).
 - **`PintarCuadroGUI.java`**:
