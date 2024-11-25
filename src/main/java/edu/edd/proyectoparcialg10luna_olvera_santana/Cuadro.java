@@ -20,7 +20,7 @@ public class Cuadro {
      * Clase interna para representar un Punto (fila, columna).
      *
      */
-    private class Punto {
+    public class Punto {
 
         private int fila;
         private int col;

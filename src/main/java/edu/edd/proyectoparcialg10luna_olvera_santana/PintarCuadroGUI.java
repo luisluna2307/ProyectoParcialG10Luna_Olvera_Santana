@@ -23,7 +23,7 @@ public class PintarCuadroGUI extends JFrame {
     private JPanel paintPanel;
     private JSpinner filaSpinner, colSpinner;
     private JComboBox<String> colorComboBox;
-    private JButton paintButton;
+    private JButton paintButton, detectButton, nextClusterButton;
     private final Map<String, Color> COLORS = new LinkedHashMap<>() {
         {
             put("Blanco", Color.WHITE);
@@ -68,8 +68,8 @@ public class PintarCuadroGUI extends JFrame {
 //        formPanel.setBorder(Borderout.Y_AXIS));
 //        controlPanel.setBorder(BorderFactory.createEmptyBorder(10, 50, 10, 50));Factory.createTitledBorder("Control Panel"));
         JPanel formPanel = createControlPanel();
-
         controlPanel.add(formPanel);
+
         add(paintPanel, BorderLayout.CENTER);
         add(controlPanel, BorderLayout.EAST);
     }
@@ -111,7 +111,7 @@ public class PintarCuadroGUI extends JFrame {
         formPanel.add(colorLabel, gbc);
 
         gbc.gridx = 1;
-        colorComboBox = new JComboBox<String>(COLORS.keySet().toArray(new String[0]));
+        colorComboBox = new JComboBox<>(COLORS.keySet().toArray(new String[0]));
         colorComboBox.setPreferredSize(new Dimension(100, 25));
         colorComboBox.setSelectedIndex(1);
         formPanel.add(colorComboBox, gbc);
@@ -135,7 +135,7 @@ public class PintarCuadroGUI extends JFrame {
         formPanel.add(detectButton, gbc);
 
         gbc.gridy = 5;
-        nextClusterButton = new JButton("Next Cluster");
+        nextClusterButton = new JButton("Next Cluster"); //inicializacion
         nextClusterButton.setPreferredSize(new Dimension(150, 30));
         nextClusterButton.setEnabled(false);
         nextClusterButton.addActionListener(e -> highlightNextCluster());
@@ -183,10 +183,10 @@ public class PintarCuadroGUI extends JFrame {
     private void drawCuadro(Graphics g) {
         int cellSize = Math.min(paintPanel.getWidth() / cuadro.getMatriz()[0].length,
                 paintPanel.getHeight() / cuadro.getMatriz().length);
-        g.setColor(Color.BLACK);
-        g.drawRect(0, 0,
-                cuadro.getMatriz()[0].length * cellSize,
-                cuadro.getMatriz().length * cellSize);
+//        g.setColor(Color.BLACK);
+//        g.drawRect(0, 0,
+//                cuadro.getMatriz()[0].length * cellSize,
+//                cuadro.getMatriz().length * cellSize);
         for (int i = 0; i < cuadro.getMatriz().length; i++) {
             for (int j = 0; j < cuadro.getMatriz()[i].length; j++) {
                 int color = cuadro.getMatriz()[i][j];
