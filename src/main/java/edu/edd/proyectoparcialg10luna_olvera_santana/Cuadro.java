@@ -87,26 +87,31 @@ public class Cuadro {
 //    }
 
     public Cuadro(String archivo) throws IOException {
-        cargarDesdeArchivo(archivo);
+        inicializarDesdeArchivo(archivo);
+    }
+
+    private void inicializarDesdeArchivo(String archivo) throws IOException {
+        matriz = cargarDesdeArchivo(archivo);
     }
 
     public int[][] getMatriz() {
         return matriz;
     }
 
-    public void cargarDesdeArchivo(String archivo) throws IOException {
+    private int[][] cargarDesdeArchivo(String archivo) throws IOException {
         try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
             String[] dimensiones = br.readLine().split(",");
             int filas = Integer.parseInt(dimensiones[0]);
             int columnas = Integer.parseInt(dimensiones[1]);
-            matriz = new int[filas][columnas];
-            visitado = new boolean[filas][columnas];
+            int[][] nuevaMatriz = new int[filas][columnas];
+
             for (int i = 0; i < filas; i++) {
                 String[] valores = br.readLine().split(",");
                 for (int j = 0; j < columnas; j++) {
-                    matriz[i][j] = Integer.parseInt(valores[j]);
+                    nuevaMatriz[i][j] = Integer.parseInt(valores[j]);
                 }
             }
+            return nuevaMatriz;
         }
     }
 
@@ -117,7 +122,7 @@ public class Cuadro {
             for (int j = 0; j < fila.length; j++) {
                 texto.append(fila[j]).append(" ");
             }
-            texto.append(System.getProperty("line.separator"));
+            texto.append(System.lineSeparator());
         }
         return texto.toString();
     }
