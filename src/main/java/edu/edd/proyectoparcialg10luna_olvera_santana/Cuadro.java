@@ -51,7 +51,6 @@ public class Cuadro {
 
         String linea = reader.readLine();
         if (linea != null) {
-            // Extraer las dimensiones (filas y columnas)
             String[] dimensiones = linea.split(",");
             int numFilas = Integer.parseInt(dimensiones[0].trim());
             int numColumnas = Integer.parseInt(dimensiones[1].trim());
@@ -123,10 +122,10 @@ public class Cuadro {
             visitado[x][y] = true;
             cluster.add(actual);
 
-            pila.push(new Punto(x + 1, y)); // Abajo
-            pila.push(new Punto(x - 1, y)); // Arriba
-            pila.push(new Punto(x, y + 1)); // Derecha
-            pila.push(new Punto(x, y - 1)); // Izquierda
+            pila.push(new Punto(x + 1, y)); 
+            pila.push(new Punto(x - 1, y)); 
+            pila.push(new Punto(x, y + 1)); 
+            pila.push(new Punto(x, y - 1)); 
         }
 
         return cluster;
