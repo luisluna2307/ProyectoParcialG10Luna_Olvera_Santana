@@ -13,9 +13,6 @@ import java.util.*;
  */
 public class PintarCuadroTerminal {
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Cuadro cuadro = new Cuadro();
@@ -61,7 +58,7 @@ public class PintarCuadroTerminal {
     }
 
     private static void detectarClusteres(Cuadro cuadro, Stack<Set<Cuadro.Punto>> pilaClusteres) {
-        pilaClusteres.clear(); // Vaciar la pila para almacenar nuevos clústeres
+        pilaClusteres.clear(); 
         List<Set<Cuadro.Punto>> clusteres = cuadro.detectarClusteres();
 
         System.out.println("\nClústeres detectados:");
@@ -69,7 +66,7 @@ public class PintarCuadroTerminal {
             System.out.println("No se detectaron clústeres.");
         } else {
             for (int i = clusteres.size() - 1; i >= 0; i--) {
-                pilaClusteres.push(clusteres.get(i)); // Agregar los clústeres a la pila
+                pilaClusteres.push(clusteres.get(i)); 
             }
 
             for (int i = 0; i < clusteres.size(); i++) {
@@ -103,7 +100,6 @@ public class PintarCuadroTerminal {
             return;
         }
 
-        // Recuperar el clúster seleccionado
         Stack<Set<Cuadro.Punto>> tempStack = new Stack<>();
         Set<Cuadro.Punto> clusterSeleccionado = null;
 
@@ -112,12 +108,10 @@ public class PintarCuadroTerminal {
             tempStack.push(clusterSeleccionado);
         }
 
-        // Restaurar la pila original
         while (!tempStack.isEmpty()) {
             pilaClusteres.push(tempStack.pop());
         }
 
-        // Pedir el color
         System.out.println("\nSeleccione un color:");
         System.out.println("1. Blanco (0)");
         System.out.println("2. Rojo (1)");
@@ -127,11 +121,11 @@ public class PintarCuadroTerminal {
         System.out.print("Ingrese el número del color: ");
         int colorSeleccionado = scanner.nextInt();
 
-        int color = -1; // Inicializar el color
-        if (colorSeleccionado == 1) color = 0; // Blanco
-        else if (colorSeleccionado == 2) color = 1; // Rojo
-        else if (colorSeleccionado == 3) color = 2; // Verde
-        else if (colorSeleccionado == 4) color = 3; // Azul
+        int color = -1; 
+        if (colorSeleccionado == 1) color = 0; 
+        else if (colorSeleccionado == 2) color = 1;
+        else if (colorSeleccionado == 3) color = 2; 
+        else if (colorSeleccionado == 4) color = 3; 
         else {
             System.out.println("Color inválido.");
             return;
