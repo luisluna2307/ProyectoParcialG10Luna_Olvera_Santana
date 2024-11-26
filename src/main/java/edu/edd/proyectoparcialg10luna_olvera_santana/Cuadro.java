@@ -9,17 +9,13 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Ejemplo de rellenar cuadro paint con backtracking usando una cola
  *
  * @author miguel
  * @version 3.0
  */
 public class Cuadro {
  
-    /**
-     * Clase interna para representar un Punto (fila, columna).
-     *
-     */
+
     public class Punto {
         private int fila;
         private int col;
@@ -43,7 +39,7 @@ public class Cuadro {
         }
     }
 
-    private int[][] matriz; // Matriz que almacena los colores
+    private int[][] matriz; 
     private boolean[][] visitado;
 
     public Cuadro() {
@@ -52,7 +48,7 @@ public class Cuadro {
 
     private void cargarMatrizDesdeArchivo(String archivo) {
         try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
-        // Leer la primera línea que contiene las dimensiones
+
         String linea = reader.readLine();
         if (linea != null) {
             // Extraer las dimensiones (filas y columnas)
@@ -60,10 +56,8 @@ public class Cuadro {
             int numFilas = Integer.parseInt(dimensiones[0].trim());
             int numColumnas = Integer.parseInt(dimensiones[1].trim());
             
-            // Inicializar la matriz con las dimensiones correctas
             matriz = new int[numFilas][numColumnas];
             
-            // Leer las siguientes líneas que contienen los datos de la matriz
             int filaActual = 0;
             while ((linea = reader.readLine()) != null && filaActual < numFilas) {
                 String[] valores = linea.split(",");
@@ -80,7 +74,6 @@ public class Cuadro {
     }
 }
 
-    // Método para imprimir la matriz (solo para mostrar en consola)
     public void imprimirMatriz() {
         for (int i = 0; i < matriz.length; i++) {
             for (int j = 0; j < matriz[i].length; j++) {
@@ -94,7 +87,6 @@ public class Cuadro {
         return matriz;
     }
 
-    // Detectar clústeres en la matriz
     public List<Set<Punto>> detectarClusteres() {
         List<Set<Punto>> clusteres = new ArrayList<>();
         visitado = new boolean[matriz.length][matriz[0].length];
@@ -112,7 +104,6 @@ public class Cuadro {
         return clusteres;
     }
 
-    // Explorar clúster usando una pila
     private Set<Punto> explorarClusterConPila(int fila, int col) {
         int color = matriz[fila][col];
         Set<Punto> cluster = new HashSet<>();
@@ -132,7 +123,6 @@ public class Cuadro {
             visitado[x][y] = true;
             cluster.add(actual);
 
-            // Agregar vecinos a la pila
             pila.push(new Punto(x + 1, y)); // Abajo
             pila.push(new Punto(x - 1, y)); // Arriba
             pila.push(new Punto(x, y + 1)); // Derecha
@@ -142,7 +132,6 @@ public class Cuadro {
         return cluster;
     }
 
-    // Pintar un clúster con el color dado
     public void pintarCluster(Set<Punto> cluster, int color) {
         for (Punto p : cluster) {
             matriz[p.getFila()][p.getCol()] = color - 1;
