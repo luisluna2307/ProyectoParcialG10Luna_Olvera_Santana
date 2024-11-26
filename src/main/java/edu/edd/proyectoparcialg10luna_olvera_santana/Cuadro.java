@@ -15,13 +15,12 @@ import java.util.*;
  * @version 3.0
  */
 public class Cuadro {
-
+ 
     /**
      * Clase interna para representar un Punto (fila, columna).
      *
      */
     public class Punto {
-
         private int fila;
         private int col;
 
@@ -37,194 +36,117 @@ public class Cuadro {
         public int getCol() {
             return col;
         }
-//        @SuppressWarnings("unused")
-//        public void setFila (int fila){
-//            this.fila = fila;
-//        }
-//        @SuppressWarnings("unused")
-//        public void setCol (int col){
-//            this.col = col;
-//        }
 
         @Override
         public String toString() {
-            return "(" + fila + ", " + col + " )";
+            return "(" + fila + ", " + col + ")";
         }
     }
 
-    /**
-     * Matriz 2D que representa al cuadro en paint
-     */
-    private int[][] matriz;
+    private int[][] matriz; // Matriz que almacena los colores
     private boolean[][] visitado;
 
-    /**
-     * Constructor que crea una nueva matriz 2D por defecto.
-     *
-     */
     public Cuadro() {
-        matriz = new int[][]{
-            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0},
-            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0},
-            {0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 2, 2, 0, 0},
-            {0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 2, 2, 0, 0},
-            {0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 2, 0, 0},
-            {0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 2, 0, 0},
-            {0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 2, 0, 0},
-            {0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2},
-            {0, 0, 0, 3, 0, 0, 1, 1, 0, 0, 2, 2, 2, 2, 2, 2, 2},
-            {3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2},
-            {0, 0, 3, 3, 3, 3, 3, 3, 0, 0, 2, 2, 2, 2, 2, 2, 2},
-            {0, 0, 3, 3, 3, 3, 3, 3, 0, 0, 2, 2, 2, 2, 2, 2, 2},
-            {0, 0, 3, 3, 3, 3, 3, 3, 0, 0, 2, 2, 2, 2, 2, 2, 2},
-            {0, 0, 3, 3, 3, 3, 3, 3, 0, 0, 2, 2, 2, 2, 2, 2, 2},
-            {0, 0, 3, 3, 3, 3, 3, 3, 0, 0, 2, 2, 2, 2, 2, 2, 2},
-            {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
-            {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3}};
-    }
-//    public Cuadro(int[][] matriz){
-//        this.matriz = matriz;
-//    }
-
-    public Cuadro(String archivo) throws IOException {
-        inicializarDesdeArchivo(archivo);
+        cargarMatrizDesdeArchivo("resources/Cuadro.txt.txt");
     }
 
-    private void inicializarDesdeArchivo(String archivo) throws IOException {
-        matriz = cargarDesdeArchivo(archivo);
+    private void cargarMatrizDesdeArchivo(String archivo) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
+        // Leer la primera línea que contiene las dimensiones
+        String linea = reader.readLine();
+        if (linea != null) {
+            // Extraer las dimensiones (filas y columnas)
+            String[] dimensiones = linea.split(",");
+            int numFilas = Integer.parseInt(dimensiones[0].trim());
+            int numColumnas = Integer.parseInt(dimensiones[1].trim());
+            
+            // Inicializar la matriz con las dimensiones correctas
+            matriz = new int[numFilas][numColumnas];
+            
+            // Leer las siguientes líneas que contienen los datos de la matriz
+            int filaActual = 0;
+            while ((linea = reader.readLine()) != null && filaActual < numFilas) {
+                String[] valores = linea.split(",");
+                for (int col = 0; col < valores.length && col < numColumnas; col++) {
+                    matriz[filaActual][col] = Integer.parseInt(valores[col].trim());
+                }
+                filaActual++;
+            }
+        }
+    } catch (IOException e) {
+        System.err.println("Error al leer el archivo: " + e.getMessage());
+    } catch (NumberFormatException e) {
+        System.err.println("Error al convertir los valores en la matriz: " + e.getMessage());
     }
+}
 
+    // Método para imprimir la matriz (solo para mostrar en consola)
+    public void imprimirMatriz() {
+        for (int i = 0; i < matriz.length; i++) {
+            for (int j = 0; j < matriz[i].length; j++) {
+                System.out.print(matriz[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+    
     public int[][] getMatriz() {
         return matriz;
     }
 
-    private int[][] cargarDesdeArchivo(String archivo) throws IOException {
-        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
-            String[] dimensiones = br.readLine().split(",");
-            int filas = Integer.parseInt(dimensiones[0]);
-            int columnas = Integer.parseInt(dimensiones[1]);
-            int[][] nuevaMatriz = new int[filas][columnas];
-
-            for (int i = 0; i < filas; i++) {
-                String[] valores = br.readLine().split(",");
-                for (int j = 0; j < columnas; j++) {
-                    nuevaMatriz[i][j] = Integer.parseInt(valores[j]);
-                }
-            }
-            return nuevaMatriz;
-        }
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder texto = new StringBuilder();
-        for (int[] fila : matriz) {
-            for (int j = 0; j < fila.length; j++) {
-                texto.append(fila[j]).append(" ");
-            }
-            texto.append(System.lineSeparator());
-        }
-        return texto.toString();
-    }
-
+    // Detectar clústeres en la matriz
     public List<Set<Punto>> detectarClusteres() {
         List<Set<Punto>> clusteres = new ArrayList<>();
         visitado = new boolean[matriz.length][matriz[0].length];
 
         for (int i = 0; i < matriz.length; i++) {
             for (int j = 0; j < matriz[0].length; j++) {
-                if (!visitado[i][j] && matriz[i][j] != 0) {
-                    Set<Punto> cluster = new HashSet<>();
-                    explorarCluster(i, j, matriz[i][j], cluster);
+                if (!visitado[i][j] && matriz[i][j] != -1) {
+                    Set<Punto> cluster = explorarClusterConPila(i, j);
                     clusteres.add(cluster);
                 }
             }
         }
+        clusteres.sort((a, b) -> b.size() - a.size());
+        
         return clusteres;
     }
 
-    private void explorarCluster(int fila, int col, int color, Set<Punto> cluster) {
-        if (fila < 0 || fila >= matriz.length || col < 0 || col >= matriz[0].length || visitado[fila][col] || matriz[fila][col] != color) {
-            return;
-        }
-        visitado[fila][col] = true;
-        cluster.add(new Punto(fila, col));
+    // Explorar clúster usando una pila
+    private Set<Punto> explorarClusterConPila(int fila, int col) {
+        int color = matriz[fila][col];
+        Set<Punto> cluster = new HashSet<>();
+        Stack<Punto> pila = new Stack<>();
+        pila.push(new Punto(fila, col));
 
-        explorarCluster(fila + 1, col, color, cluster); // Abajo
-        explorarCluster(fila - 1, col, color, cluster); // Arriba
-        explorarCluster(fila, col + 1, color, cluster); // Derecha
-        explorarCluster(fila, col - 1, color, cluster); // Izquierda
-    }
+        while (!pila.isEmpty()) {
+            Punto actual = pila.pop();
 
-    public void imprimirMatriz() {
-        for (int[] fila : matriz) {
-            for (int valor : fila) {
-                System.out.print(valor + " ");
+            int x = actual.getFila();
+            int y = actual.getCol();
+
+            if (x < 0 || x >= matriz.length || y < 0 || y >= matriz[0].length || visitado[x][y] || matriz[x][y] != color) {
+                continue;
             }
-            System.out.println();
+
+            visitado[x][y] = true;
+            cluster.add(actual);
+
+            // Agregar vecinos a la pila
+            pila.push(new Punto(x + 1, y)); // Abajo
+            pila.push(new Punto(x - 1, y)); // Arriba
+            pila.push(new Punto(x, y + 1)); // Derecha
+            pila.push(new Punto(x, y - 1)); // Izquierda
+        }
+
+        return cluster;
+    }
+
+    // Pintar un clúster con el color dado
+    public void pintarCluster(Set<Punto> cluster, int color) {
+        for (Punto p : cluster) {
+            matriz[p.getFila()][p.getCol()] = color - 1;
         }
     }
 
-    private boolean izqVacio(Punto a) {
-        if (a.getCol() == 0) {
-            return false;
-        }
-        return matriz[a.getFila()][a.getCol() - 1] <= 0;
-    }
-
-    private boolean derVacio(Punto a) {
-        if (a.getCol() == matriz[0].length - 1) {
-            return false;
-        }
-        return matriz[a.getFila()][a.getCol() + 1] <= 0;
-    }
-
-    private boolean arrVacio(Punto a) {
-        if (a.getFila() == 0) {
-            return false;
-        }
-        return matriz[a.getFila() - 1][a.getCol()] <= 0;
-    }
-
-    private boolean abjVacio(Punto a) {
-        if (a.getFila() == matriz.length - 1) {
-            return false;
-        }
-        return matriz[a.getFila() + 1][a.getCol()] <= 0;
-    }
-
-    private boolean vacio(Punto a) {
-        return matriz[a.fila][a.col] <= 0;
-    }
-
-    public void pintarCuadro(int fila, int col, int color) {
-        Punto p = new Punto(fila, col);
-        if (color == 0 || !vacio(p)) {
-            return;
-        }
-        ArrayDeque<Punto> pila = new ArrayDeque<>();
-        boolean fin = false;
-        while (!fin) {
-            System.out.println(pila);
-            if (vacio(p)) {
-                matriz[p.fila][p.col] = color;
-                pila.push(p);
-            }
-            if (derVacio(p)) {
-                p = new Punto(p.fila, p.col + 1);
-            } else if (arrVacio(p)) {
-                p = new Punto(p.fila - 1, p.col);
-            } else if (izqVacio(p)) {
-                p = new Punto(p.fila, p.col - 1);
-            } else if (abjVacio(p)) {
-                p = new Punto(p.fila + 1, p.col);
-            } else {
-                if (!pila.isEmpty()) {
-                    p = pila.pop();
-                } else {
-                    fin = true;
-                }
-            }
-        }
-    }
 }
