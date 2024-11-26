@@ -19,14 +19,14 @@ public class PintarCuadroTerminal {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Cuadro cuadro = new Cuadro();
+        Stack<Set<Cuadro.Punto>> pilaClusteres = new Stack<>();
 
         while (true) {
             System.out.println("\n--- Menú ---");
             System.out.println("1. Mostrar matriz");
-            System.out.println("2. Pintar celda");
-            System.out.println("3. Detectar clústeres");
-            System.out.println("4. Pintar clúster específico");
-            System.out.println("5. Salir");
+            System.out.println("2. Detectar clústeres");
+            System.out.println("3. Pintar clúster específico");
+            System.out.println("4. Salir");
             System.out.print("Seleccione una opción: ");
 
             int opcion = scanner.nextInt();
@@ -37,18 +37,14 @@ public class PintarCuadroTerminal {
                     break;
 
                 case 2:
-                    pintarCelda(cuadro, scanner);
+                    detectarClusteres(cuadro, pilaClusteres);
                     break;
 
                 case 3:
-                    detectarClusteres(cuadro);
+                    pintarCluster(cuadro, pilaClusteres, scanner);
                     break;
 
                 case 4:
-                    pintarCluster(cuadro, scanner);
-                    break;
-
-                case 5:
                     System.out.println("Saliendo...");
                     scanner.close();
                     return;
@@ -64,60 +60,86 @@ public class PintarCuadroTerminal {
         cuadro.imprimirMatriz();
     }
 
-    private static void pintarCelda(Cuadro cuadro, Scanner scanner) {
-        System.out.print("\nIngrese la fila: ");
-        int fila = scanner.nextInt();
-        System.out.print("Ingrese la columna: ");
-        int col = scanner.nextInt();
-        System.out.print("Ingrese el color (número entero): ");
-        int color = scanner.nextInt();
-
-        cuadro.pintarCuadro(fila, col, color);
-        System.out.println("Celda pintada.");
-        mostrarMatriz(cuadro);
-    }
-
-    private static void detectarClusteres(Cuadro cuadro) {
+    private static void detectarClusteres(Cuadro cuadro, Stack<Set<Cuadro.Punto>> pilaClusteres) {
+        pilaClusteres.clear(); // Vaciar la pila para almacenar nuevos clústeres
         List<Set<Cuadro.Punto>> clusteres = cuadro.detectarClusteres();
+
         System.out.println("\nClústeres detectados:");
         if (clusteres.isEmpty()) {
             System.out.println("No se detectaron clústeres.");
         } else {
+            for (int i = clusteres.size() - 1; i >= 0; i--) {
+                pilaClusteres.push(clusteres.get(i)); // Agregar los clústeres a la pila
+            }
+
             for (int i = 0; i < clusteres.size(); i++) {
-                System.out.println("Clúster " + (i + 1) + ": " + clusteres.get(i));
+                Set<Cuadro.Punto> cluster = clusteres.get(i);
+                System.out.println("Clúster " + (i + 1) + ":");
+                System.out.println("  - Tamaño: " + cluster.size());
+                System.out.println("  - Color: " + cuadro.getMatriz()[cluster.iterator().next().getFila()][cluster.iterator().next().getCol()]);
+                System.out.println("  - Píxeles: " + cluster);
             }
         }
     }
 
-    private static void pintarCluster(Cuadro cuadro, Scanner scanner) {
-        List<Set<Cuadro.Punto>> clusteres = cuadro.detectarClusteres();
-        if (clusteres.isEmpty()) {
-            System.out.println("No se detectaron clústeres.");
+    private static void pintarCluster(Cuadro cuadro, Stack<Set<Cuadro.Punto>> pilaClusteres, Scanner scanner) {
+        if (pilaClusteres.isEmpty()) {
+            System.out.println("No hay clústeres detectados. Por favor, detecte los clústeres primero.");
             return;
         }
 
-        System.out.println("\nSeleccione un clúster para pintar:");
-        for (int i = 0; i < clusteres.size(); i++) {
-            System.out.println((i + 1) + ". Clúster con " + clusteres.get(i).size() + " puntos.");
+        System.out.println("\nSeleccione un clúster para pintar (de 1 a " + pilaClusteres.size() + "):");
+        Stack<Set<Cuadro.Punto>> copiaPila = (Stack<Set<Cuadro.Punto>>) pilaClusteres.clone();
+
+        for (int i = copiaPila.size(); i > 0; i--) {
+            System.out.println(i + ". Clúster con " + copiaPila.pop().size() + " puntos.");
         }
 
         System.out.print("Ingrese el número del clúster: ");
-        int clusterIndex = scanner.nextInt() - 1;
+        int clusterIndex = scanner.nextInt();
 
-        if (clusterIndex < 0 || clusterIndex >= clusteres.size()) {
+        if (clusterIndex < 1 || clusterIndex > pilaClusteres.size()) {
             System.out.println("Índice de clúster inválido.");
             return;
         }
 
-        System.out.print("Ingrese el color (número entero): ");
-        int color = scanner.nextInt();
+        // Recuperar el clúster seleccionado
+        Stack<Set<Cuadro.Punto>> tempStack = new Stack<>();
+        Set<Cuadro.Punto> clusterSeleccionado = null;
 
-        Set<Cuadro.Punto> clusterSeleccionado = clusteres.get(clusterIndex);
-        for (Cuadro.Punto punto : clusterSeleccionado) {
-            cuadro.getMatriz()[punto.getFila()][punto.getCol()] = color;
+        for (int i = 0; i < clusterIndex; i++) {
+            clusterSeleccionado = pilaClusteres.pop();
+            tempStack.push(clusterSeleccionado);
         }
 
-        System.out.println("Clúster pintado.");
+        // Restaurar la pila original
+        while (!tempStack.isEmpty()) {
+            pilaClusteres.push(tempStack.pop());
+        }
+
+        // Pedir el color
+        System.out.println("\nSeleccione un color:");
+        System.out.println("1. Blanco (0)");
+        System.out.println("2. Rojo (1)");
+        System.out.println("3. Verde (2)");
+        System.out.println("4. Azul (3)");
+
+        System.out.print("Ingrese el número del color: ");
+        int colorSeleccionado = scanner.nextInt();
+
+        int color = -1; // Inicializar el color
+        if (colorSeleccionado == 1) color = 0; // Blanco
+        else if (colorSeleccionado == 2) color = 1; // Rojo
+        else if (colorSeleccionado == 3) color = 2; // Verde
+        else if (colorSeleccionado == 4) color = 3; // Azul
+        else {
+            System.out.println("Color inválido.");
+            return;
+        }
+
+        // Pintar el clúster
+        cuadro.pintarCluster(clusterSeleccionado, color);
+        System.out.println("Clúster pintado con color " + color);
         mostrarMatriz(cuadro);
     }
 }
