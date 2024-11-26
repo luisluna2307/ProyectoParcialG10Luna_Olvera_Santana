@@ -114,7 +114,7 @@ public class PintarCuadroGUI extends JFrame {
     }
 
     private void pintarCluster() {
-        int colorIndex = colorComboBox.getSelectedIndex() + 1; // Tomar el índice como color
+        int colorIndex = colorComboBox.getSelectedIndex() + 1; 
         Set<Cuadro.Punto> selectedCluster = clusteres.get(clusterComboBox.getSelectedIndex());
         cuadro.pintarCluster(selectedCluster, colorIndex);
         paintPanel.repaint();
@@ -137,7 +137,6 @@ public class PintarCuadroGUI extends JFrame {
         int cellSize = Math.min(paintPanel.getWidth() / cuadro.getMatriz()[0].length,
                             paintPanel.getHeight() / cuadro.getMatriz().length);
 
-        // Preprocesar colores para evitar llamadas repetitivas al obtener el valor del array
         Color[] colorArray = COLORS.values().toArray(new Color[0]);
         
         for (int i = 0; i < cuadro.getMatriz().length; i++) {
